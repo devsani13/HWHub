@@ -10,7 +10,7 @@ namespace HWHub
         {
             InitializeComponent();
 
-            MainPage = new AdicionarPage();
+            MainPage = new MainPage();
         }
 
         protected override void OnStart()

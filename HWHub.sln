@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWHub.UWP", "HWHub.UWP\HWHu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWHub.Android", "HWHub.Android\HWHub.Android.csproj", "{51172297-9F97-429B-80DB-DE5768D8DA63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWHub", "HWHub\HWHub.csproj", "{EEC75175-DE25-494B-A12D-97D09FD59E2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWHub", "HWHub\HWHub.csproj", "{EEC75175-DE25-494B-A12D-97D09FD59E2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,18 +7,26 @@ using Xamarin.Essentials;
 using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using HWHub;
+using SQLite;
 
 namespace HWHub
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class AdicionarPage : ContentPage
 	{
-		public AdicionarPage ()
+
+        private readonly DatabaseHelper _databaseHelper;
+        private string _imagemPath;
+
+        public AdicionarPage ()
 		{
 			InitializeComponent ();
 
-            MaxValuePicker.SelectedIndex = 4; // Seleciona o valor máximo de 5 inicialmente
+            MaxValuePicker.SelectedIndex = 4;
             OnMaxValueChanged(this, EventArgs.Empty);
+
+            _databaseHelper = new DatabaseHelper();
         }
 
         private async void FecharPagina(object sender, EventArgs e)
@@ -30,38 +38,32 @@ namespace HWHub
         {
             try
             {
-                // Apresentar as opções ao usuário (Câmera ou Galeria)
                 var action = await DisplayActionSheet("Escolha uma opção", "Cancelar", null, "Tirar foto", "Escolher da galeria");
 
+                FileResult photo = null;
                 if (action == "Tirar foto")
                 {
-                    // Método para capturar foto com a câmera
-                    var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
-                    {
-                        Title = "Tire uma foto"
-                    });
-
-                    if (photo != null)
-                    {
-                        var stream = await photo.OpenReadAsync();
-                        ImagePreview.Source = ImageSource.FromStream(() => stream);
-                        ImagePreview.Padding = 0;
-                    }
+                    photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions { Title = "Tire uma foto" });
                 }
                 else if (action == "Escolher da galeria")
                 {
-                    // Método para selecionar foto da galeria
-                    var photo = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
-                    {
-                        Title = "Escolha uma foto"
-                    });
+                    photo = await MediaPicker.PickPhotoAsync(new MediaPickerOptions { Title = "Escolha uma foto" });
+                }
 
-                    if (photo != null)
+                if (photo != null)
+                {
+                    string localPath = Path.Combine(FileSystem.AppDataDirectory, photo.FileName);
+
+                    using (var stream = await photo.OpenReadAsync())
+                    using (var newStream = File.OpenWrite(localPath))
                     {
-                        var stream = await photo.OpenReadAsync();
-                        ImagePreview.Source = ImageSource.FromStream(() => stream);
-                        ImagePreview.Padding = 0;
+                        await stream.CopyToAsync(newStream);
                     }
+
+                    ImagePreview.Source = ImageSource.FromFile(localPath);
+                    ImagePreview.Padding = 0;
+
+                    _imagemPath = localPath;
                 }
             }
             catch (Exception ex)
@@ -76,10 +78,8 @@ namespace HWHub
             {
                 int maxValue = (int)MaxValuePicker.SelectedItem;
 
-                // Atualiza o label com a nova informação
                 NumberLabel.Text = $"1/{maxValue}";
 
-                // Reseta o valor inicial para 1
                 currentValue = 1;
             }
         }
@@ -91,8 +91,7 @@ namespace HWHub
             NumberLabel.Text = $"{currentValue}/{maxValue}";
         }
 
-        // Incremento manual ao clicar no botão "+"
-        private int currentValue = 1;  // Variável para armazenar o valor atual
+        private int currentValue = 1;
 
         private void OnIncreaseClicked(object sender, EventArgs e)
         {
@@ -113,6 +112,49 @@ namespace HWHub
                 int maxValue = (int)MaxValuePicker.SelectedItem;
                 NumberLabel.Text = $"{currentValue}/{maxValue}";
             }
+        }
+
+        private async void OnSalvarClicked(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Nome.Text) ||
+                string.IsNullOrWhiteSpace(Colecao.Text) ||
+                string.IsNullOrWhiteSpace(Marca.Text) ||
+                string.IsNullOrWhiteSpace(Cor.Text))
+            {
+                await DisplayAlert("Erro", "Preencha todos os campos", "OK");
+                return;
+            }
+
+            int limiteColecao = Convert.ToInt32(MaxValuePicker.SelectedItem);
+            int posicaoColecao = currentValue;
+
+            Miniatura miniatura = new Miniatura
+            {
+                Nome = Nome.Text,
+                Colecao = Colecao.Text,
+                Marca = Marca.Text,
+                Quantidade = Convert.ToInt32(MaxValuePicker.SelectedItem ?? "0"),
+                Cor = Cor.Text,
+                THunt = option1.IsChecked,
+                ImagemPath = _imagemPath,
+                Posição = posicaoColecao,
+                LimiteColecao = limiteColecao
+            };
+
+            await _databaseHelper.SalvarMiniaturaAsync(miniatura);
+            await DisplayAlert("Sucesso", "Miniatura salva com sucesso!", "OK");
+
+            Nome.Text = "";
+            Colecao.Text = "";
+            Marca.Text = "";
+            Cor.Text = "";
+            option1.IsChecked = false;
+            option2.IsChecked = false;
+            ImagePreview.Source = "camera.png";
+            ImagePreview.Padding = 10;
+            _imagemPath = null;
+
+            await Navigation.PopModalAsync();
         }
     }
 }

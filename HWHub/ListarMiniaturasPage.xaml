@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HWHub.ListarMiniaturasPage">
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="#171717">
+            <Label Text="Miniaturas Salvas" FontSize="24" TextColor="White" HorizontalOptions="Center" Padding="10"/>
+
+            <ListView x:Name="MiniaturasListView" HasUnevenRows="True" SeparatorVisibility="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame BackgroundColor="#222222" Padding="10" Margin="5" CornerRadius="10">
+                                <StackLayout Orientation="Horizontal" Spacing="10">
+                                    <Image Source="{Binding ImagemPath}" WidthRequest="80" HeightRequest="80" Aspect="AspectFill"/>
+                                    <StackLayout VerticalOptions="Center">
+                                        <Label Text="{Binding Nome}" FontSize="18" TextColor="White"/>
+                                        <Label Text="{Binding Colecao}" FontSize="14" TextColor="Gray"/>
+                                        <Label Text="{Binding Marca}" FontSize="14" TextColor="Gray"/>
+                                        <Label Text="{Binding Cor}" FontSize="14" TextColor="Gray"/>
+                                        <Label Text="THunt" FontSize="14" TextColor="Gray">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding THunt}" Value="True">
+                                                    <Setter Property="IsVisible" Value="True"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding THunt}" Value="False">
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </StackLayout>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

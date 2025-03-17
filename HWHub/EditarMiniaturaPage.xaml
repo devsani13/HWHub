@@ -1,19 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="HWHub.AdicionarPage">
+             x:Class="HWHub.EditarMiniaturaPage">
     <ContentPage.Content>
         <StackLayout BackgroundColor="#171717">
             <StackLayout BackgroundColor="#ff8800" HeightRequest="60" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Orientation="Horizontal">
-                <Label Text="Adicionar miniatura" FontSize="20" TextColor="White" Padding="15"></Label>
-                <ImageButton Source="close.pgn" Clicked="FecharPagina" HorizontalOptions="End" WidthRequest="50" BackgroundColor="Transparent" Margin="90,0,0,0"/>
+                <Label Text="Editar Miniatura" FontSize="20" TextColor="White" Padding="15"/>
+                <ImageButton Source="close.png" Clicked="FecharPagina" HorizontalOptions="End" WidthRequest="50" BackgroundColor="Transparent" Margin="90,0,0,0"/>
             </StackLayout>
 
             <StackLayout Padding="20" Orientation="Vertical" HorizontalOptions="Center">
-                <ImageButton x:Name="ImagePreview" Source="camera.png" Clicked="OnChoosePhotoClicked" HeightRequest="150" Padding="10" HorizontalOptions="CenterAndExpand" CornerRadius="25" BackgroundColor="#ff8800" Aspect="AspectFill"/>
-                <Entry Placeholder="Nome" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Nome"></Entry>
-                <Entry Placeholder="Coleção" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Colecao"></Entry>
-                <Entry Placeholder="Marca" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Marca"></Entry>
+                <ImageButton x:Name="ImagePreview" Source="{Binding ImagemPath}" Clicked="OnChoosePhotoClicked" HeightRequest="150" Padding="10" HorizontalOptions="CenterAndExpand" CornerRadius="25" BackgroundColor="#ff8800" Aspect="AspectFill"/>
+
+                <Entry Placeholder="Nome" WidthRequest="300" PlaceholderColor="#ff8800" Text="{Binding Nome}" x:Name="Nome"/>
+                <Entry Placeholder="Coleção" WidthRequest="300" PlaceholderColor="#ff8800" Text="{Binding Colecao}" x:Name="Colecao"/>
+                <Entry Placeholder="Marca" WidthRequest="300" PlaceholderColor="#ff8800" Text="{Binding Marca}" x:Name="Marca"/>
+                <Entry Placeholder="Cor" WidthRequest="300" PlaceholderColor="#ff8800" Text="{Binding Cor}" x:Name="Cor"/>
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -29,7 +31,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Text="Posição" FontSize="18" TextColor="#ff8800" Margin="0,10,0,0" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0"></Label>
+                    <Label Text="Posição" FontSize="18" TextColor="#ff8800" Margin="0,10,0,0" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0"/>
 
                     <Picker x:Name="MaxValuePicker" Title="Quantidade na coleção" SelectedIndexChanged="OnMaxValueChanged" HorizontalTextAlignment="Center" FontSize="20" TextColor="#ff8800" Grid.Column="0" Grid.Row="1">
                         <Picker.ItemsSource>
@@ -47,20 +49,18 @@
 
                     <BoxView Color="#ff8800" WidthRequest="2" VerticalOptions="FillAndExpand" HorizontalOptions="Center" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Margin="20"/>
 
-                    <Entry Placeholder="Cor" PlaceholderColor="#ff8800" Grid.Column="3" Grid.Row="0" x:Name="Cor"/>
-
                     <Label Text="T-Hunt" TextColor="#ff8800" FontSize="18" Grid.Column="3" Grid.Row="1"/>
 
                     <StackLayout Grid.Column="3" Grid.Row="2" Grid.RowSpan="2" Margin="0,-15,0,0">
-                        <RadioButton x:Name="option1" Content="Sim" TextColor="#ff8800"/>
-                        <RadioButton x:Name="option2" Content="Não" TextColor="#ff8800"/>
+                        <Switch IsToggled="{Binding THunt}" />
                     </StackLayout>
                 </Grid>
-
             </StackLayout>
 
-            <ImageButton Source="add.png" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" HeightRequest="100" Padding="15" BackgroundColor="#ff8800" Clicked="OnSalvarClicked"/>
-
+            <StackLayout Orientation="Horizontal" Padding="10">
+                <Button Text="Salvar Alterações" Clicked="OnSalvarClicked" BackgroundColor="#ff8800" TextColor="White" HorizontalOptions="FillAndExpand"/>
+                <Button Text="Excluir Miniatura" Clicked="OnExcluirClicked" BackgroundColor="Red" TextColor="White" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

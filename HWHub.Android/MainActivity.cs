@@ -4,6 +4,7 @@ using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
+using FFImageLoading.Forms.Platform;
 
 namespace HWHub.Droid
 {
@@ -19,6 +20,8 @@ namespace HWHub.Droid
             LoadApplication(new App());
 
             Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#171717"));
+
+            CachedImageRenderer.Init(true);
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
