@@ -30,7 +30,6 @@ namespace HWHub
             MaxValuePicker.SelectedIndex = miniatura.LimiteColecao == 5 ? 0 : 1;
             OnMaxValueChanged(this, EventArgs.Empty);
 
-            // Aqui a miniatura já tem a posição carregada, não precisamos de uma variável separada
             NumberLabel.Text = $"{miniatura.Posição}/{miniatura.LimiteColecao}";
         }
 
@@ -48,7 +47,6 @@ namespace HWHub
                 int maxValue = (int)MaxValuePicker.SelectedItem;
                 miniatura.LimiteColecao = maxValue;
 
-                // Atualiza a exibição da posição com a nova coleção
                 NumberLabel.Text = $"{miniatura.Posição}/{maxValue}";
             }
         }
@@ -81,7 +79,7 @@ namespace HWHub
             if (result > 0)
             {
                 await DisplayAlert("Sucesso", "Alterações salvas com sucesso!", "OK");
-                await Navigation.PopModalAsync(); // Volta para a página anterior
+                await Navigation.PopModalAsync();
             }
             else
             {
@@ -115,13 +113,12 @@ namespace HWHub
                         await stream.CopyToAsync(newStream);
                     }
 
-                    // Atualizando a imagem na instância do _miniatura
-                    _miniatura.ImagemPath = localPath;  // Isso vai garantir que a imagem seja salva corretamente
+                    // Atualiza o caminho da imagem na miniatura
+                    miniatura.ImagemPath = localPath;
 
-                    ImagePreview.Source = ImageSource.FromFile(localPath);
-                    ImagePreview.Padding = 0;
-
-                    _imagemPath = localPath;
+                    // Atualiza manualmente o BindingContext (opcional)
+                    BindingContext = null;
+                    BindingContext = miniatura;
                 }
             }
             catch (Exception ex)
@@ -136,18 +133,101 @@ namespace HWHub
 
             if (confirmacao)
             {
-                int result = await _databaseHelper.DeletarMiniaturaAsync(_miniatura);
+                int result = await _databaseHelper.DeletarMiniaturaAsync(miniatura);
 
                 if (result > 0)
                 {
                     await DisplayAlert("Sucesso", "Miniatura excluída com sucesso!", "OK");
-                    await Navigation.PopModalAsync(); // Volta para a página anterior
+                    await Navigation.PopModalAsync();
                 }
                 else
                 {
                     await DisplayAlert("Erro", "Erro ao excluir a miniatura.", "OK");
                 }
             }
+        }
+
+        private List<string> nomesCadastrados = new List<string>();
+        private List<string> colecoesCadastradas = new List<string>();
+        private List<string> marcasCadastradas = new List<string>();
+        private List<string> coresCadastradas = new List<string>();
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            var miniaturas = await _databaseHelper.GetMiniaturasAsync();
+
+            nomesCadastrados = miniaturas.Select(m => m.Nome).Distinct().ToList();
+            colecoesCadastradas = miniaturas.Select(m => m.Colecao).Distinct().ToList();
+            marcasCadastradas = miniaturas.Select(m => m.Marca).Distinct().ToList();
+            coresCadastradas = miniaturas.Select(m => m.Cor).Distinct().ToList();
+        }
+
+        private void OnNomeTextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarSugestoes(e.NewTextValue, nomesCadastrados, SugestoesNomeListView);
+        }
+
+        private void OnColecaoTextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarSugestoes(e.NewTextValue, colecoesCadastradas, SugestoesColecaoListView);
+        }
+
+        private void OnMarcaTextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarSugestoes(e.NewTextValue, marcasCadastradas, SugestoesMarcaListView);
+        }
+
+        private void OnCorTextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarSugestoes(e.NewTextValue, coresCadastradas, SugestoesCorListView);
+        }
+
+        private void AtualizarSugestoes(string texto, List<string> lista, ListView listView)
+        {
+            if (!string.IsNullOrWhiteSpace(texto))
+            {
+                var sugestoes = lista.Where(item => item.ToLower().Contains(texto.ToLower())).ToList();
+                listView.ItemsSource = sugestoes;
+                listView.IsVisible = sugestoes.Any();
+            }
+            else
+            {
+                listView.IsVisible = false;
+            }
+        }
+
+        private void OnSugestaoNomeSelecionada(object sender, ItemTappedEventArgs e)
+        {
+            Nome.Text = e.Item.ToString();
+            SugestoesNomeListView.IsVisible = false;
+        }
+
+        private void OnSugestaoColecaoSelecionada(object sender, ItemTappedEventArgs e)
+        {
+            Colecao.Text = e.Item.ToString();
+            SugestoesColecaoListView.IsVisible = false;
+        }
+
+        private void OnSugestaoMarcaSelecionada(object sender, ItemTappedEventArgs e)
+        {
+            Marca.Text = e.Item.ToString();
+            SugestoesMarcaListView.IsVisible = false;
+        }
+
+        private void OnSugestaoCorSelecionada(object sender, ItemTappedEventArgs e)
+        {
+            Cor.Text = e.Item.ToString();
+            SugestoesCorListView.IsVisible = false;
+        }
+
+        // Esconde as sugestões ao perder o foco
+        private void OnEntryUnfocused(object sender, FocusEventArgs e)
+        {
+            SugestoesNomeListView.IsVisible = false;
+            SugestoesColecaoListView.IsVisible = false;
+            SugestoesMarcaListView.IsVisible = false;
+            SugestoesCorListView.IsVisible = false;
         }
     }
 }

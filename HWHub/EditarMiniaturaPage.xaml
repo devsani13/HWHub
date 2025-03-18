@@ -6,61 +6,103 @@
         <StackLayout BackgroundColor="#171717">
             <StackLayout BackgroundColor="#ff8800" HeightRequest="60" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Orientation="Horizontal">
                 <Label Text="Editar Miniatura" FontSize="20" TextColor="White" Padding="15"/>
-                <ImageButton Source="close.png" Clicked="FecharPagina" HorizontalOptions="End" WidthRequest="50" BackgroundColor="Transparent" Margin="90,0,0,0"/>
+                <ImageButton Source="close.png" Clicked="FecharPagina" HorizontalOptions="End" WidthRequest="50" BackgroundColor="Transparent" Margin="120,0,0,0"/>
             </StackLayout>
 
-            <StackLayout Padding="20" Orientation="Vertical" HorizontalOptions="Center">
-                <ImageButton x:Name="ImagePreview" Source="{Binding ImagemPath}" Clicked="OnChoosePhotoClicked" HeightRequest="150" Padding="10" HorizontalOptions="CenterAndExpand" CornerRadius="25" BackgroundColor="#ff8800" Aspect="AspectFill"/>
+            <ScrollView>
 
-                <Entry Placeholder="Nome" WidthRequest="300" PlaceholderColor="#ff8800" Text="{Binding Nome}" x:Name="Nome"/>
-                <Entry Placeholder="Coleção" WidthRequest="300" PlaceholderColor="#ff8800" Text="{Binding Colecao}" x:Name="Colecao"/>
-                <Entry Placeholder="Marca" WidthRequest="300" PlaceholderColor="#ff8800" Text="{Binding Marca}" x:Name="Marca"/>
-                <Entry Placeholder="Cor" WidthRequest="300" PlaceholderColor="#ff8800" Text="{Binding Cor}" x:Name="Cor"/>
+                <StackLayout Padding="20" Orientation="Vertical" HorizontalOptions="Center">
+                    <ImageButton x:Name="ImagePreview" Source="{Binding ImagemPath}" Clicked="OnChoosePhotoClicked" HeightRequest="150" HorizontalOptions="CenterAndExpand" CornerRadius="25" BackgroundColor="#ff8800" Aspect="AspectFill"/>
 
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition Height="60"/>
-                    </Grid.RowDefinitions>
+                    <Entry Text="{Binding Nome}" Placeholder="Nome" TextChanged="OnNomeTextChanged" Unfocused="OnEntryUnfocused" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Nome"/>
+                    <ListView x:Name="SugestoesNomeListView" IsVisible="False" ItemTapped="OnSugestaoNomeSelecionada" HeightRequest="100">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextCell Text="{Binding .}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60"/>
-                        <ColumnDefinition Width="60"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                    <Entry Text="{Binding Colecao}" Placeholder="Coleção" TextChanged="OnColecaoTextChanged" Unfocused="OnEntryUnfocused" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Colecao"/>
+                    <ListView x:Name="SugestoesColecaoListView" IsVisible="False" ItemTapped="OnSugestaoColecaoSelecionada" HeightRequest="100">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextCell Text="{Binding .}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-                    <Label Text="Posição" FontSize="18" TextColor="#ff8800" Margin="0,10,0,0" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0"/>
+                    <Entry Text="{Binding Marca}" Placeholder="Marca" TextChanged="OnMarcaTextChanged" Unfocused="OnEntryUnfocused" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Marca"/>
+                    <ListView x:Name="SugestoesMarcaListView" IsVisible="False" ItemTapped="OnSugestaoMarcaSelecionada" HeightRequest="100">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextCell Text="{Binding .}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-                    <Picker x:Name="MaxValuePicker" Title="Quantidade na coleção" SelectedIndexChanged="OnMaxValueChanged" HorizontalTextAlignment="Center" FontSize="20" TextColor="#ff8800" Grid.Column="0" Grid.Row="1">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:Int32}">
-                                <x:Int32>5</x:Int32>
-                                <x:Int32>10</x:Int32>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
+                    <Entry Text="{Binding Cor}" Placeholder="Cor" TextChanged="OnCorTextChanged" Unfocused="OnEntryUnfocused" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Cor"/>
+                    <ListView x:Name="SugestoesCorListView" IsVisible="False" ItemTapped="OnSugestaoCorSelecionada" HeightRequest="100">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextCell Text="{Binding .}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-                    <Label x:Name="NumberLabel" FontSize="20" HorizontalOptions="Center" Grid.Column="1" Grid.Row="1" TextColor="#ff8800" HorizontalTextAlignment="Center" Margin="0,10,0,0"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="60"/>
+                        </Grid.RowDefinitions>
 
-                    <ImageButton Source="add.png" WidthRequest="50" HeightRequest="50" BackgroundColor="#ff8800" Clicked="OnIncreaseClicked" CornerRadius="25" Grid.Column="0" Grid.Row="2" Padding="10"/>
-                    <ImageButton Source="minus.png" WidthRequest="50" HeightRequest="50" BackgroundColor="#ff8800" Clicked="OnDecreaseClicked" CornerRadius="25" Grid.Column="1" Grid.Row="2" Padding="10"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <BoxView Color="#ff8800" WidthRequest="2" VerticalOptions="FillAndExpand" HorizontalOptions="Center" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Margin="20"/>
+                        <Label Text="Posição" FontSize="18" TextColor="#ff8800" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"/>
 
-                    <Label Text="T-Hunt" TextColor="#ff8800" FontSize="18" Grid.Column="3" Grid.Row="1"/>
+                        <Picker x:Name="MaxValuePicker" Title="Quantidade na coleção" SelectedIndexChanged="OnMaxValueChanged" HorizontalTextAlignment="Center" FontSize="20" TextColor="#ff8800" Grid.Column="0" Grid.Row="1">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:Int32}">
+                                    <x:Int32>5</x:Int32>
+                                    <x:Int32>10</x:Int32>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
 
-                    <StackLayout Grid.Column="3" Grid.Row="2" Grid.RowSpan="2" Margin="0,-15,0,0">
-                        <Switch IsToggled="{Binding THunt}" />
-                    </StackLayout>
-                </Grid>
-            </StackLayout>
+                        <Label x:Name="NumberLabel" FontSize="20" HorizontalOptions="Center" Grid.Column="1" Grid.Row="1" TextColor="#ff8800" HorizontalTextAlignment="Center" Margin="0,10,0,0"/>
 
-            <StackLayout Orientation="Horizontal" Padding="10">
-                <Button Text="Salvar Alterações" Clicked="OnSalvarClicked" BackgroundColor="#ff8800" TextColor="White" HorizontalOptions="FillAndExpand"/>
-                <Button Text="Excluir Miniatura" Clicked="OnExcluirClicked" BackgroundColor="Red" TextColor="White" HorizontalOptions="FillAndExpand"/>
-            </StackLayout>
+                        <ImageButton Source="add.png" WidthRequest="50" HeightRequest="50" BackgroundColor="#ff8800" Clicked="OnIncreaseClicked" CornerRadius="25" Grid.Column="0" Grid.Row="2" Padding="10"/>
+                        <ImageButton Source="minus.png" WidthRequest="50" HeightRequest="50" BackgroundColor="#ff8800" Clicked="OnDecreaseClicked" CornerRadius="25" Grid.Column="1" Grid.Row="2" Padding="10"/>
+
+                        <BoxView Color="#ff8800" WidthRequest="2" VerticalOptions="FillAndExpand" HorizontalOptions="Center" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Margin="20"/>
+
+                        <Label Text="T-Hunt" TextColor="#ff8800" FontSize="18" Grid.Column="3" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center"/>
+                        <Switch IsToggled="{Binding THunt}" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="3" Grid.Row="1" Margin="0,-30,0,0" />
+                    </Grid>
+
+                </StackLayout>
+            </ScrollView>
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Grid.Column="0" Grid.Row="0" Spacing="0" BackgroundColor="Transparent">
+                    <ImageButton Source="save.png" Clicked="OnSalvarClicked" Aspect="AspectFill" Padding="50" BackgroundColor="#ff8800" HorizontalOptions="FillAndExpand"/>
+                    <ImageButton Source="delete.png" Clicked="OnExcluirClicked" Aspect="AspectFill" Padding="50" BackgroundColor="Red" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+            </Grid>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -128,6 +128,11 @@ namespace HWHub
             int limiteColecao = Convert.ToInt32(MaxValuePicker.SelectedItem);
             int posicaoColecao = currentValue;
 
+            if (string.IsNullOrEmpty(_imagemPath))
+            {
+                _imagemPath = "erro2.png";
+            }
+
             Miniatura miniatura = new Miniatura
             {
                 Nome = Nome.Text,
@@ -155,6 +160,89 @@ namespace HWHub
             _imagemPath = null;
 
             await Navigation.PopModalAsync();
+        }
+
+        private List<string> nomesCadastrados = new List<string>();
+        private List<string> colecoesCadastradas = new List<string>();
+        private List<string> marcasCadastradas = new List<string>();
+        private List<string> coresCadastradas = new List<string>();
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            var miniaturas = await _databaseHelper.GetMiniaturasAsync();
+
+            nomesCadastrados = miniaturas.Select(m => m.Nome).Distinct().ToList();
+            colecoesCadastradas = miniaturas.Select(m => m.Colecao).Distinct().ToList();
+            marcasCadastradas = miniaturas.Select(m => m.Marca).Distinct().ToList();
+            coresCadastradas = miniaturas.Select(m => m.Cor).Distinct().ToList();
+        }
+
+        private void OnNomeTextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarSugestoes(e.NewTextValue, nomesCadastrados, SugestoesNomeListView);
+        }
+
+        private void OnColecaoTextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarSugestoes(e.NewTextValue, colecoesCadastradas, SugestoesColecaoListView);
+        }
+
+        private void OnMarcaTextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarSugestoes(e.NewTextValue, marcasCadastradas, SugestoesMarcaListView);
+        }
+
+        private void OnCorTextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarSugestoes(e.NewTextValue, coresCadastradas, SugestoesCorListView);
+        }
+
+        private void AtualizarSugestoes(string texto, List<string> lista, ListView listView)
+        {
+            if (!string.IsNullOrWhiteSpace(texto))
+            {
+                var sugestoes = lista.Where(item => item.ToLower().Contains(texto.ToLower())).ToList();
+                listView.ItemsSource = sugestoes;
+                listView.IsVisible = sugestoes.Any();
+            }
+            else
+            {
+                listView.IsVisible = false;
+            }
+        }
+
+        private void OnSugestaoNomeSelecionada(object sender, ItemTappedEventArgs e)
+        {
+            Nome.Text = e.Item.ToString();
+            SugestoesNomeListView.IsVisible = false;
+        }
+
+        private void OnSugestaoColecaoSelecionada(object sender, ItemTappedEventArgs e)
+        {
+            Colecao.Text = e.Item.ToString();
+            SugestoesColecaoListView.IsVisible = false;
+        }
+
+        private void OnSugestaoMarcaSelecionada(object sender, ItemTappedEventArgs e)
+        {
+            Marca.Text = e.Item.ToString();
+            SugestoesMarcaListView.IsVisible = false;
+        }
+
+        private void OnSugestaoCorSelecionada(object sender, ItemTappedEventArgs e)
+        {
+            Cor.Text = e.Item.ToString();
+            SugestoesCorListView.IsVisible = false;
+        }
+
+        // Esconde as sugestões ao perder o foco
+        private void OnEntryUnfocused(object sender, FocusEventArgs e)
+        {
+            SugestoesNomeListView.IsVisible = false;
+            SugestoesColecaoListView.IsVisible = false;
+            SugestoesMarcaListView.IsVisible = false;
+            SugestoesCorListView.IsVisible = false;
         }
     }
 }

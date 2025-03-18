@@ -9,11 +9,44 @@
                 <ImageButton Source="close.pgn" Clicked="FecharPagina" HorizontalOptions="End" WidthRequest="50" BackgroundColor="Transparent" Margin="90,0,0,0"/>
             </StackLayout>
 
-            <StackLayout Padding="20" Orientation="Vertical" HorizontalOptions="Center">
+            <ScrollView>
+                <StackLayout Padding="20" Orientation="Vertical" HorizontalOptions="Center">
                 <ImageButton x:Name="ImagePreview" Source="camera.png" Clicked="OnChoosePhotoClicked" HeightRequest="150" Padding="10" HorizontalOptions="CenterAndExpand" CornerRadius="25" BackgroundColor="#ff8800" Aspect="AspectFill"/>
-                <Entry Placeholder="Nome" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Nome"></Entry>
-                <Entry Placeholder="Coleção" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Colecao"></Entry>
-                <Entry Placeholder="Marca" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Marca"></Entry>
+                <Entry Placeholder="Nome" TextChanged="OnNomeTextChanged" Unfocused="OnEntryUnfocused" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Nome"/>
+                    <ListView x:Name="SugestoesNomeListView" IsVisible="False" ItemTapped="OnSugestaoNomeSelecionada" HeightRequest="100">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding .}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Entry Placeholder="Coleção" TextChanged="OnColecaoTextChanged" Unfocused="OnEntryUnfocused" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Colecao"/>
+                    <ListView x:Name="SugestoesColecaoListView" IsVisible="False" ItemTapped="OnSugestaoColecaoSelecionada" HeightRequest="100">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding .}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Entry Placeholder="Marca" TextChanged="OnMarcaTextChanged" Unfocused="OnEntryUnfocused" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Marca"/>
+                    <ListView x:Name="SugestoesMarcaListView" IsVisible="False" ItemTapped="OnSugestaoMarcaSelecionada" HeightRequest="100">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding .}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Entry Placeholder="Cor" TextChanged="OnCorTextChanged" Unfocused="OnEntryUnfocused" WidthRequest="300" PlaceholderColor="#ff8800" x:Name="Cor"/>
+                    <ListView x:Name="SugestoesCorListView" IsVisible="False" ItemTapped="OnSugestaoCorSelecionada" HeightRequest="100">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding .}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -47,18 +80,16 @@
 
                     <BoxView Color="#ff8800" WidthRequest="2" VerticalOptions="FillAndExpand" HorizontalOptions="Center" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Margin="20"/>
 
-                    <Entry Placeholder="Cor" PlaceholderColor="#ff8800" Grid.Column="3" Grid.Row="0" x:Name="Cor"/>
+                    <Label Text="T-Hunt" TextColor="#ff8800" FontSize="18" Grid.Column="3" Grid.Row="0"/>
 
-                    <Label Text="T-Hunt" TextColor="#ff8800" FontSize="18" Grid.Column="3" Grid.Row="1"/>
-
-                    <StackLayout Grid.Column="3" Grid.Row="2" Grid.RowSpan="2" Margin="0,-15,0,0">
+                    <StackLayout Grid.Column="3" Grid.Row="1" Grid.RowSpan="2" Margin="0,-15,0,0">
                         <RadioButton x:Name="option1" Content="Sim" TextColor="#ff8800"/>
                         <RadioButton x:Name="option2" Content="Não" TextColor="#ff8800"/>
                     </StackLayout>
                 </Grid>
 
             </StackLayout>
-
+            </ScrollView>
             <ImageButton Source="add.png" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" HeightRequest="100" Padding="15" BackgroundColor="#ff8800" Clicked="OnSalvarClicked"/>
 
         </StackLayout>

@@ -40,8 +40,8 @@
                                 </Grid.RowDefinitions>
                                 
                                 <ffimageloading:CachedImage Source="{Binding ImagemPath}" WidthRequest="120" HeightRequest="80"
-                            Aspect="AspectFill" LoadingPlaceholder="loading.png"
-                            ErrorPlaceholder="error.png" CacheDuration="30"
+                            Aspect="AspectFill" LoadingPlaceholder="loading2.gif"
+                            ErrorPlaceholder="erro2.png" CacheDuration="30"
                             DownsampleToViewSize="True" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3"/>
 
                                 <Label Text="{Binding Nome}" FontSize="16" TextColor="#ff8800" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Padding="0,10,0,0"/>
